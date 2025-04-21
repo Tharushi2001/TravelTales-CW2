@@ -16,14 +16,13 @@ const Login = () => {
         username,
         password,
       });
-
+  
       if (response.data.message === "Login successful") {
-        // Store user data in localStorage
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-
-        // Redirect to the page they were trying to visit
-        const redirectTo = location.state?.from || "/"; // Use the previous location or default to home
-        navigate(redirectTo); 
+        localStorage.setItem("token", response.data.token); // Store token
+        localStorage.setItem("user", response.data.username); // Store username or user details
+  
+        const redirectTo = location.state?.from || "/"; // Redirect after successful login
+        navigate(redirectTo);
       } else {
         alert("Invalid credentials!");
       }
@@ -32,6 +31,7 @@ const Login = () => {
       alert("An error occurred during login.");
     }
   };
+  
 
   return (
     <div className="auth">

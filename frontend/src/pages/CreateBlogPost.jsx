@@ -22,7 +22,7 @@ const CreateBlogPost = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/blog/create", 
+        "http://localhost:5000/api/blogs/blog/create", 
         { title, content, country, date_of_visit: dateOfVisit },
         {
           headers: {

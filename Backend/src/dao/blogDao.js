@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-// Method to create a blog post
+// Create a blog post
 exports.createBlogPost = (userId, title, content, country, date_of_visit) => {
   const sql = "INSERT INTO blog_posts (user_id, title, content, country, date_of_visit) VALUES (?, ?, ?, ?, ?)";
   return new Promise((resolve, reject) => {
@@ -11,18 +11,29 @@ exports.createBlogPost = (userId, title, content, country, date_of_visit) => {
   });
 };
 
-// Method to get a single blog post by ID
-exports.getBlogPostById = (id) => {
+// Get all blog posts
+exports.getAllBlogPosts = () => {
+  const sql = "SELECT * FROM blog_posts ORDER BY date_of_visit DESC";
+  return new Promise((resolve, reject) => {
+    db.query(sql, (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+
+// Get blog post by ID
+exports.getBlogPostById = (postId) => {
   const sql = "SELECT * FROM blog_posts WHERE id = ?";
   return new Promise((resolve, reject) => {
-    db.query(sql, [id], (err, results) => {
+    db.query(sql, [postId], (err, results) => {
       if (err) return reject(err);
       resolve(results[0]);
     });
   });
 };
 
-// Method to update a blog post
+// Update blog post
 exports.updateBlogPost = (postId, title, content, country, date_of_visit) => {
   const sql = "UPDATE blog_posts SET title = ?, content = ?, country = ?, date_of_visit = ? WHERE id = ?";
   return new Promise((resolve, reject) => {
@@ -33,7 +44,7 @@ exports.updateBlogPost = (postId, title, content, country, date_of_visit) => {
   });
 };
 
-// Method to delete a blog post
+// Delete blog post
 exports.deleteBlogPost = (postId) => {
   const sql = "DELETE FROM blog_posts WHERE id = ?";
   return new Promise((resolve, reject) => {
@@ -44,13 +55,36 @@ exports.deleteBlogPost = (postId) => {
   });
 };
 
-// Method to get all blog posts
-exports.getAllBlogPosts = () => {
-  const sql = "SELECT * FROM blog_posts ORDER BY date_of_visit DESC"; // Sort by date_of_visit descending
+// Like a post
+exports.likePost = (userId, postId) => {
+  const sql = "INSERT IGNORE INTO likes (user_id, post_id) VALUES (?, ?)";
   return new Promise((resolve, reject) => {
-    db.query(sql, (err, results) => {
+    db.query(sql, [userId, postId], (err, result) => {
       if (err) return reject(err);
-      resolve(results); // Return the list of blog posts
+      resolve(result);
+    });
+  });
+};
+
+// Get like count for a post
+exports.getLikeCount = (postId) => {
+  const sql = "SELECT COUNT(*) AS like_count FROM likes WHERE post_id = ?";
+  return new Promise((resolve, reject) => {
+    db.query(sql, [postId], (err, result) => {
+      if (err) return reject(err);
+      resolve(result[0].like_count);
+    });
+  });
+};
+
+
+// Add a comment
+exports.addComment = (userId, postId, content) => {
+  const sql = "INSERT INTO comments (user_id, post_id, content) VALUES (?, ?, ?)";
+  return new Promise((resolve, reject) => {
+    db.query(sql, [userId, postId, content], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
     });
   });
 };
