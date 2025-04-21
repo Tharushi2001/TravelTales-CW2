@@ -1,23 +1,29 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // updated import
+import { useNavigate, useLocation } from "react-router-dom"; // useLocation to get the previous path
 import axios from "axios";
 
 const Login = () => {
-  const [username, setUsername] = useState(""); // Use username instead of email
+  const [username, setUsername] = useState(""); 
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // useNavigate replaces useHistory
+  const navigate = useNavigate();
+  const location = useLocation(); // This will give us the current location
 
+  // Handle the login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5000/api/auth/login", {
-        username, // Send username instead of email
+        username,
         password,
       });
 
       if (response.data.message === "Login successful") {
+        // Store user data in localStorage
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        navigate("/"); // use navigate instead of history.push
+
+        // Redirect to the page they were trying to visit
+        const redirectTo = location.state?.from || "/"; // Use the previous location or default to home
+        navigate(redirectTo); 
       } else {
         alert("Invalid credentials!");
       }
@@ -32,7 +38,7 @@ const Login = () => {
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <input
-          type="text" // Keep it as username input
+          type="text" 
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}

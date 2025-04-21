@@ -1,11 +1,9 @@
 import React from "react";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import CreateBlogPost from "./pages/CreateBlogPost";
 import Layout from "./components/Layout";
 import './styles.scss';
 
@@ -16,14 +14,13 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        index: true,
+        index: true, // Default route for '/'
         element: <Home />,
       },
-
     ],
   },
 
-  
+  // Authentication Routes
   {
     path: "/login",
     element: <Login />,
@@ -31,6 +28,12 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+
+  // Create Blog Post Route
+  {
+    path: "/create-blog-post", 
+    element: <CreateBlogPost />,
   },
 ]);
 
