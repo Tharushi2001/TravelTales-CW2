@@ -17,19 +17,37 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-    const { username, password } = req.body;
-  
-    userDao.getUserByUsername(username) // Change from getUserByEmail to getUserByUsername
-      .then((user) => {
-        if (!user) return res.status(401).json({ message: 'Invalid username or password' });
-  
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-          if (err || !isMatch) return res.status(401).json({ message: 'Invalid username or password' });
-  
-          const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-          res.status(200).json({ message: 'Login successful', token });
+  const { username, password } = req.body;
+
+  userDao.getUserByUsername(username) // Change from getUserByEmail to getUserByUsername
+    .then((user) => {
+      if (!user) return res.status(401).json({ message: 'Invalid username or password' });
+
+      bcrypt.compare(password, user.password, (err, isMatch) => {
+        if (err || !isMatch) return res.status(401).json({ message: 'Invalid username or password' });
+
+        const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Set the token as an HTTP-only cookie
+        res.cookie('accessToken', token, {
+          httpOnly: true, // Cookie can't be accessed via JavaScript
+          secure: process.env.NODE_ENV === 'production', // Set secure flag to true in production
+          sameSite: 'None', // Allow cross-site cookie sharing (CORS), adjust as needed
+          maxAge: 3600000, // 1 hour expiry
         });
-      })
-      .catch((error) => res.status(500).json({ message: 'Database error', error }));
-  };
-  
+
+        res.status(200).json({ message: 'Login successful', token });
+      });
+    })
+    .catch((error) => res.status(500).json({ message: 'Database error', error }));
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie('accessToken', {
+    httpOnly: true, // Cookie is removed from the browser
+    secure: process.env.NODE_ENV === 'production', // Adjust this flag in production
+    sameSite: 'None', // Adjust based on your needs
+  });
+
+  res.status(200).json({ message: 'User has been logged out' });
+};
