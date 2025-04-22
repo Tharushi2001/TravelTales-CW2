@@ -1,6 +1,4 @@
 const blogDao = require('../dao/blogDao');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 // Create blog post
 exports.createBlogPost = (req, res) => {
@@ -36,16 +34,12 @@ exports.editBlogPost = (req, res) => {
         return res.status(403).json({ message: 'Unauthorized to edit this post' });
       }
 
-      blogDao.updateBlogPost(postId, title, content, country, date_of_visit)
-        .then(() => res.status(200).json({ message: 'Blog post updated successfully' }))
-        .catch((err) => {
-          console.error('Error updating blog post:', err);
-          res.status(500).json({ message: 'Error updating blog post' });
-        });
+      return blogDao.updateBlogPost(postId, title, content, country, date_of_visit);
     })
+    .then(() => res.status(200).json({ message: 'Blog post updated successfully' }))
     .catch((err) => {
-      console.error('Error fetching blog post:', err);
-      res.status(500).json({ message: 'Error fetching blog post' });
+      console.error('Error updating blog post:', err);
+      res.status(500).json({ message: 'Error updating blog post' });
     });
 };
 
@@ -61,16 +55,12 @@ exports.deleteBlogPost = (req, res) => {
         return res.status(403).json({ message: 'Unauthorized to delete this post' });
       }
 
-      blogDao.deleteBlogPost(postId)
-        .then(() => res.status(200).json({ message: 'Blog post deleted successfully' }))
-        .catch((err) => {
-          console.error('Error deleting blog post:', err);
-          res.status(500).json({ message: 'Error deleting blog post' });
-        });
+      return blogDao.deleteBlogPost(postId);
     })
+    .then(() => res.status(200).json({ message: 'Blog post deleted successfully' }))
     .catch((err) => {
-      console.error('Error fetching blog post:', err);
-      res.status(500).json({ message: 'Error fetching blog post' });
+      console.error('Error deleting blog post:', err);
+      res.status(500).json({ message: 'Error deleting blog post' });
     });
 };
 
@@ -78,14 +68,27 @@ exports.deleteBlogPost = (req, res) => {
 exports.getBlogPosts = (req, res) => {
   blogDao.getAllBlogPosts()
     .then((posts) => {
-      if (!posts || posts.length === 0) {
-        return res.status(404).json({ message: 'No blog posts found' });
-      }
+      if (!posts.length) return res.status(404).json({ message: 'No blog posts found' });
       res.status(200).json(posts);
     })
     .catch((err) => {
       console.error('Error fetching blog posts:', err);
       res.status(500).json({ message: 'Error fetching blog posts' });
+    });
+};
+
+// Get single blog post by ID
+exports.getSingleBlogPost = (req, res) => {
+  const { postId } = req.params;
+
+  blogDao.getBlogPostById(postId)
+    .then((post) => {
+      if (!post) return res.status(404).json({ message: 'Post not found' });
+      res.status(200).json(post);
+    })
+    .catch((err) => {
+      console.error('Error fetching blog post:', err);
+      res.status(500).json({ message: 'Error fetching blog post' });
     });
 };
 
@@ -95,23 +98,13 @@ exports.likePost = (req, res) => {
   const userId = req.user.id;
 
   blogDao.likePost(userId, postId)
-    .then(() => {
-      // After liking the post, fetch the updated like count
-      blogDao.getLikeCount(postId)
-        .then((likeCount) => {
-          res.status(200).json({ message: "Post liked", likeCount: likeCount });
-        })
-        .catch((err) => {
-          console.error("Error fetching like count:", err);
-          res.status(500).json({ message: "Failed to get like count" });
-        });
-    })
+    .then(() => blogDao.getLikeCount(postId))
+    .then((likeCount) => res.status(200).json({ message: "Post liked", likeCount }))
     .catch((err) => {
       console.error("Like failed:", err);
       res.status(500).json({ message: "Failed to like post" });
     });
 };
-
 
 // Add comment
 exports.addComment = (req, res) => {
@@ -119,12 +112,29 @@ exports.addComment = (req, res) => {
   const { content } = req.body;
   const userId = req.user.id;
 
-  if (!content) return res.status(400).json({ message: "Comment content required" });
+  if (!content) {
+    return res.status(400).json({ message: "Comment content required" });
+  }
 
   blogDao.addComment(userId, postId, content)
     .then(() => res.status(201).json({ message: "Comment added" }))
     .catch((err) => {
       console.error("Add comment failed:", err);
       res.status(500).json({ message: "Failed to add comment" });
+    });
+};
+
+// Get comments for a post
+exports.getCommentsForPost = (req, res) => {
+  const { postId } = req.params;
+
+  blogDao.getCommentsByPostId(postId)
+    .then((comments) => {
+      if (!comments.length) return res.status(404).json({ message: 'No comments found for this post' });
+      res.status(200).json(comments);
+    })
+    .catch((err) => {
+      console.error('Error fetching comments:', err);
+      res.status(500).json({ message: 'Error fetching comments' });
     });
 };

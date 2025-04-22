@@ -9,6 +9,11 @@ router.delete('/blog/delete/:postId',authenticate,blogController.deleteBlogPost)
 router.get('/blog', blogController.getBlogPosts); // Add this line
 router.post("/like/:postId", authenticate, blogController.likePost);
 router.post("/comment/:postId", authenticate, blogController.addComment);
+// Get comments for a specific blog post
+router.get('/blog/comments/:postId', blogController.getCommentsForPost);
+router.get("/blog/:postId", blogController.getSingleBlogPost);
+
+
 
 
 module.exports=router;

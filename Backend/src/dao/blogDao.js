@@ -11,9 +11,14 @@ exports.createBlogPost = (userId, title, content, country, date_of_visit) => {
   });
 };
 
-// Get all blog posts
+// Get all blog posts with the username of the post owner
 exports.getAllBlogPosts = () => {
-  const sql = "SELECT * FROM blog_posts ORDER BY date_of_visit DESC";
+  const sql = `
+    SELECT blog_posts.*, users.username
+    FROM blog_posts
+    JOIN users ON blog_posts.user_id = users.id
+    ORDER BY blog_posts.date_of_visit DESC
+  `;
   return new Promise((resolve, reject) => {
     db.query(sql, (err, results) => {
       if (err) return reject(err);
@@ -22,9 +27,14 @@ exports.getAllBlogPosts = () => {
   });
 };
 
-// Get blog post by ID
+// Get blog post by ID with the username of the post owner
 exports.getBlogPostById = (postId) => {
-  const sql = "SELECT * FROM blog_posts WHERE id = ?";
+  const sql = `
+    SELECT blog_posts.*, users.username
+    FROM blog_posts
+    JOIN users ON blog_posts.user_id = users.id
+    WHERE blog_posts.id = ?
+  `;
   return new Promise((resolve, reject) => {
     db.query(sql, [postId], (err, results) => {
       if (err) return reject(err);
@@ -77,7 +87,6 @@ exports.getLikeCount = (postId) => {
   });
 };
 
-
 // Add a comment
 exports.addComment = (userId, postId, content) => {
   const sql = "INSERT INTO comments (user_id, post_id, content) VALUES (?, ?, ?)";
@@ -85,6 +94,17 @@ exports.addComment = (userId, postId, content) => {
     db.query(sql, [userId, postId, content], (err, result) => {
       if (err) return reject(err);
       resolve(result);
+    });
+  });
+};
+
+// Get comments for a specific post by postId
+exports.getCommentsByPostId = (postId) => {
+  const sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";  // Assuming 'created_at' exists in your comments table
+  return new Promise((resolve, reject) => {
+    db.query(sql, [postId], (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
     });
   });
 };

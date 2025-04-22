@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import bannerImg from '../img/Banner-img.jpg';
+import bannerImg from "../img/Banner-img.jpg";
+import "font-awesome/css/font-awesome.min.css"; // Import Font Awesome icons
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
-  const [likedPosts, setLikedPosts] = useState([]); // Track liked posts
-  const [commentedPosts, setCommentedPosts] = useState([]); // Track commented posts
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [commentInputs, setCommentInputs] = useState({});
   const [sortOption, setSortOption] = useState("newest");
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
 
   const fetchPosts = useCallback(async () => {
     try {
@@ -26,11 +30,8 @@ const Home = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  const token = localStorage.getItem("token"); // Get token from localStorage
-  const userId = localStorage.getItem("userId"); // Get userId from localStorage
-
   const handleCreatePost = () => {
-    if (token) { // Check if user is logged in
+    if (token) {
       navigate("/create-blog-post");
     } else {
       navigate("/login", { state: { from: "/create-blog-post" } });
@@ -39,61 +40,72 @@ const Home = () => {
 
   const handleLikePost = async (postId) => {
     if (!token) {
-      console.log("User is not logged in.");
       navigate("/login");
       return;
     }
-    console.log("Liking post with ID:", postId); // Debugging
     try {
       const res = await axios.post(
         `http://localhost:5000/api/blogs/like/${postId}`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`, // Correct Authorization header format
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Like response:", res.data); // Debugging
-      const updatedPosts = posts.map((post) => {
-        if (post.id === postId) {
-          return { ...post, likes: res.data.likeCount }; // Update the like count
-        }
-        return post;
-      });
-      setPosts(updatedPosts);
-
-      // Update likedPosts state to reflect the liked post
-      setLikedPosts((prev) => [...prev, postId]); // Add the postId to likedPosts
+      if (res.status === 200) {
+        const updatedPosts = posts.map((post) =>
+          post.id === postId ? { ...post, likes: res.data.likeCount } : post
+        );
+        setPosts(updatedPosts);
+        setLikedPosts((prev) => [...new Set([...prev, postId])]);
+      } else {
+        console.error("Unable to like post, status:", res.status);
+      }
     } catch (err) {
-      console.error("Error liking post:", err);
+      console.error("Error liking post:", err.response?.data || err.message);
     }
   };
 
-  const handleAddComment = async (postId, comment) => {
+  const handleCommentInputChange = (postId, value) => {
+    setCommentInputs((prev) => ({ ...prev, [postId]: value }));
+  };
+
+  const handleAddComment = async (postId) => {
     if (!token) {
-      console.log("User is not logged in.");
       navigate("/login");
       return;
     }
-    console.log("Adding comment to post with ID:", postId); // Debugging
+    const comment = commentInputs[postId];
+    if (!comment) return;
+
     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/blogs/blog/comment/${postId}`,
+      await axios.post(
+        `http://localhost:5000/api/blogs/comment/${postId}`,
         { content: comment },
         {
-          headers: {
-            Authorization: `Bearer ${token}`, // Correct Authorization header format
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Comment response:", res.data); // Debugging
-      fetchPosts(); // Refresh the posts
-
-      // Update commentedPosts state to reflect the commented post
-      setCommentedPosts((prev) => [...prev, postId]); // Add the postId to commentedPosts
+      setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+      fetchPosts();
     } catch (err) {
-      console.error("Error adding comment:", err);
+      console.error("Error adding comment:", err.response?.data || err.message);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/blogs/${postId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        fetchPosts();
+      } catch (err) {
+        console.error("Error deleting post:", err.response?.data || err.message);
+      }
     }
   };
 
@@ -111,6 +123,7 @@ const Home = () => {
         <div className="sec1-header">
           <h2>Blog Posts</h2>
         </div>
+
         <div className="home-header">
           <select
             className="sort-select"
@@ -121,10 +134,7 @@ const Home = () => {
             <option value="most_liked">Most Liked</option>
             <option value="most_commented">Most Commented</option>
           </select>
-          <button
-            onClick={handleCreatePost}
-            className="create-post-btn"
-          >
+          <button onClick={handleCreatePost} className="create-post-btn">
             Create New Post
           </button>
         </div>
@@ -132,35 +142,92 @@ const Home = () => {
         <div className="post-grid">
           {posts.length > 0 ? (
             posts.map((post) => (
-              <div className="post-card" key={post.id}>
-                <div className="post-header">
-                  <h2>{post.title}</h2>
-                  <span>{new Date(post.date_of_visit).toLocaleDateString()}</span>
-                </div>
-                <div className="post-meta">
-                  <span>Country: {post.country}</span>
-                  <span>🧑‍💻 {post.username}</span>
-                </div>
-                <p className="post-content">{post.content.slice(0, 150)}...</p>
+              <div className="post-wrapper" key={post.id}>
+                <div className="post-card">
+                  <div className="post-header">
+                    <h2>{post.title}</h2>
+                    <span>{new Date(post.date_of_visit).toLocaleDateString()}</span>
+                  </div>
+                  <div className="post-meta">
+                    <span>Country: {post.country}</span>
+                    <span>🧑‍💻 {post.username}</span>
+                  </div>
 
-                <div className="post-stats">
-                  <span>👍 {post.likes}</span>
-                  <span>💬 {post.comments_count}</span>
+                  <p className="post-content">
+                    {post.content.length > 150
+                      ? `${post.content.slice(0, 150)}...`
+                      : post.content}
+                  </p>
+
+                  {post.content.length > 150 && (
+                    <button
+                      className="read-more-btn"
+                      onClick={() => navigate(`/view-post/${post.id}`)}
+                    >
+                      Read More
+                    </button>
+                  )}
                 </div>
 
-                <button
-                  onClick={() => handleLikePost(post.id)}
-                  className={`like-btn ${likedPosts.includes(post.id) ? "liked" : ""}`} // Add "liked" class if the user has already liked the post
-                >
-                  {likedPosts.includes(post.id) ? "Liked" : "Like"} {/* Show "Liked" if the user has liked the post */}
-                </button>
+                <div className="social-features">
+                  <button
+                    onClick={() => handleLikePost(post.id)}
+                    className={`like-btn ${likedPosts.includes(post.id) ? "liked" : ""}`}
+                  >
+                    <i className="fa fa-thumbs-up" />
+                  </button>
+                  <span className="like-count">{post.likes} Likes</span>
 
-                <button
-                  onClick={() => handleAddComment(post.id, "Great post!")}
-                  className={`comment-btn ${commentedPosts.includes(post.id) ? "commented" : ""}`} // Add "commented" class if the user has already commented
-                >
-                  {commentedPosts.includes(post.id) ? "Commented" : "Comment"} {/* Show "Commented" if the user has commented */}
-                </button>
+                  <span className="comment-count">
+                    <i className="fa fa-comment" /> {post.comments?.length ?? 0} Comments
+                  </span>
+                </div>
+
+                {/* Comment Section */}
+                <div className="comment-section">
+                  {post.comments && post.comments.length > 0 ? (
+                    <div className="comments-list">
+                      {post.comments.map((comment) => (
+                        <div key={comment.id} className="comment">
+                          <span className="comment-author">{comment.username}</span>
+                          <p className="comment-content">{comment.content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No comments yet.</p>
+                  )}
+
+                  <input
+                    type="text"
+                    placeholder="Write a comment..."
+                    value={commentInputs[post.id] || ""}
+                    onChange={(e) => handleCommentInputChange(post.id, e.target.value)}
+                    className="comment-input"
+                  />
+                  <button
+                    onClick={() => handleAddComment(post.id)}
+                    className="submit-comment-btn"
+                  >
+                    Comment
+                  </button>
+                </div>
+               
+
+                <div className="post-actions">
+  <i
+    className="fas fa-edit edit-post-icon"
+    onClick={() => navigate(`/edit-post/${post.id}`)}
+    title="Edit Post"
+  />
+  <i
+    className="fas fa-trash-alt delete-post-icon"
+    onClick={() => handleDeletePost(post.id)}
+    title="Delete Post"
+  />
+</div>
+
+              
               </div>
             ))
           ) : (
