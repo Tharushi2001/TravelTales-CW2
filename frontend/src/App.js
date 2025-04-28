@@ -8,6 +8,7 @@ import ViewPost from "./pages/ViewPost";
 import EditPost from "./pages/EditPost"; // ✅ Import EditPost
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/protectedRoute"; // ✅ Import ProtectedRoute
+import Search from "./pages/search"; // ✅ Import Search
 import './styles.scss';
 
 const router = createBrowserRouter([
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
             <EditPost />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "search", // ✅ Add Search route
+        element: <Search />, 
       },
     ],
   },

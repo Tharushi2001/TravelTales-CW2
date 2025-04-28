@@ -4,6 +4,7 @@ const cors = require('cors'); // Import CORS
 const cookieParser = require('cookie-parser'); // Import cookie-parser
 const authRoutes = require('./routes/authRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.use(bodyParser.json());
 // API routes
 app.use('/api/auth', authRoutes); // Auth routes for user login, register, logout
 app.use('/api/blogs', blogRoutes); // Blog routes for your blog-related API
+app.use('/api/search', searchRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

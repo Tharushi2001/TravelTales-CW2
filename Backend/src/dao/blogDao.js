@@ -108,3 +108,37 @@ exports.getCommentsByPostId = (postId) => {
     });
   });
 };
+
+// Search blog posts by country
+exports.searchBlogPostsByCountry = (country) => {
+  const sql = `
+    SELECT blog_posts.*, users.username
+    FROM blog_posts
+    JOIN users ON blog_posts.user_id = users.id
+    WHERE blog_posts.country LIKE ?
+    ORDER BY blog_posts.date_of_visit DESC
+  `;
+  return new Promise((resolve, reject) => {
+    db.query(sql, [`%${country}%`], (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+
+// Search blog posts by username
+exports.searchBlogPostsByUsername = (username) => {
+  const sql = `
+    SELECT blog_posts.*, users.username
+    FROM blog_posts
+    JOIN users ON blog_posts.user_id = users.id
+    WHERE users.username LIKE ?
+    ORDER BY blog_posts.date_of_visit DESC
+  `;
+  return new Promise((resolve, reject) => {
+    db.query(sql, [`%${username}%`], (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
