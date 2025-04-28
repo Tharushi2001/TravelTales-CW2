@@ -34,7 +34,10 @@ const Search = () => {
   
 
   return (
-    <div className="search-container">
+    <div className='main-container'>
+
+    <div className='outer-box'>
+          <div className="search-container">
       <h2>Search Blog Posts</h2>
 
       <form onSubmit={handleSearch}>
@@ -90,6 +93,9 @@ const Search = () => {
         </div>
       )}
     </div>
+    </div>
+      </div>
+  
   );
 };
 

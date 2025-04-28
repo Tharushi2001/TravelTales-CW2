@@ -426,6 +426,24 @@ $lightgreen: #b9e7e7;
    line-height: 1.5;
 }
 
+
+  .outer-box {
+    width: 100%;
+    max-width: 800px;
+  }
+
+
+  
+
+.main-container {
+  min-height: 80vh;
+  background-color: #169976; 
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  padding: 20px; }
+
+
 .search-container {
   max-width: 800px;
   margin: 0 auto;
@@ -468,13 +486,13 @@ $lightgreen: #b9e7e7;
     margin-bottom: 10px;
 
     &:focus {
-      border-color: #007bff;
+      border-color: #3ed469;
       outline: none;
     }
   }
 
   button {
-    background-color: #007bff;
+    background-color: #005f5f;
     color: white;
     border: none;
     padding: 10px;
@@ -484,7 +502,7 @@ $lightgreen: #b9e7e7;
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #0056b3;
+      background-color: #3ed469;
     }
   }
 
@@ -512,9 +530,10 @@ $lightgreen: #b9e7e7;
       }
 
       p {
-        font-size: 14px;
-        color: #555;
+        font-size: 16px;
+        color: #000000;
         margin-bottom: 8px;
+        line-height: 1.5;
 
         &.username {
           font-weight: bold;
