@@ -1,44 +1,49 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // useLocation to get the previous path
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
-  const [username, setUsername] = useState(""); 
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const location = useLocation(); // This will give us the current location
+  const location = useLocation();
 
-  // Handle the login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!username || !password) {
+      alert("Please enter both username and password.");
+      return;
+    }
+
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
-        username,
-        password,
-      });
-  
-      if (response.data.message === "Login successful") {
-        localStorage.setItem("token", response.data.token); // Store token
-        localStorage.setItem("user", response.data.username); // Store username or user details
-  
-        const redirectTo = location.state?.from || "/"; // Redirect after successful login
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { username, password },
+        { withCredentials: true }
+      );
+
+      if (response.data && response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        alert("Login successful!");
+
+        const redirectTo = location.state?.from || "/";
         navigate(redirectTo);
       } else {
-        alert("Invalid credentials!");
+        alert("Login failed: No token received.");
       }
     } catch (error) {
-      console.error("Login failed:", error);
-      alert("An error occurred during login.");
+      console.error("Login failed:", error.response ? error.response.data : error.message);
+      alert(error.response?.data?.message || "An error occurred during login.");
     }
   };
-  
 
   return (
     <div className="auth">
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <input
-          type="text" 
+          type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}

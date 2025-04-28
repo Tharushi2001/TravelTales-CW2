@@ -4,10 +4,11 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateBlogPost from "./pages/CreateBlogPost";
-import ViewPost from "./pages/ViewPost"; // ✅ Import ViewPost
+import ViewPost from "./pages/ViewPost";
+import EditPost from "./pages/EditPost"; // ✅ Import EditPost
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/protectedRoute"; // ✅ Import ProtectedRoute
 import './styles.scss';
-
 
 const router = createBrowserRouter([
   {
@@ -19,8 +20,24 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "view-post/:id", // ✅ Add ViewPost route
+        path: "view-post/:id",
         element: <ViewPost />,
+      },
+      {
+        path: "create-blog-post",
+        element: (
+          <ProtectedRoute>
+            <CreateBlogPost />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "edit-post/:id", // ✅ Proper EditPost route inside Layout
+        element: (
+          <ProtectedRoute>
+            <EditPost />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -31,10 +48,6 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
-  },
-  {
-    path: "/create-blog-post",
-    element: <CreateBlogPost />,
   },
 ]);
 

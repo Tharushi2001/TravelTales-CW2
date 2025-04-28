@@ -11,8 +11,7 @@ const CreateBlogPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Getting the token from localStorage for authentication
+
     const token = localStorage.getItem("token");
     
     if (!token) {
@@ -22,22 +21,40 @@ const CreateBlogPost = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/blogs/blog/create", 
-        { title, content, country, date_of_visit: dateOfVisit },
+        "http://localhost:5000/api/blogs/blog/create",
+        {
+          title,
+          content,
+          country,
+          date_of_visit: dateOfVisit, // Send field names matching backend expectation
+        },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Attach the token for authentication
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Explicitly mention content type
+          },
+          withCredentials: true, // Important if backend also checks cookies
         }
       );
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.data.success) {
         alert("Blog post created successfully!");
-        navigate("/dashboard");
+        navigate("/");
+      } else {
+        throw new Error("Unexpected server response");
       }
     } catch (error) {
-      console.error("Error creating blog post:", error);
-      alert("Error creating blog post. Please try again.");
+      console.error(
+        "Error creating blog post:",
+        error.response ? error.response.data : error.message
+      );
+
+      if (error.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        navigate("/login");
+      } else {
+        alert(error.response?.data?.message || "Error creating blog post. Please try again.");
+      }
     }
   };
 
@@ -57,6 +74,7 @@ const CreateBlogPost = () => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
+          rows="8"
         />
         <input
           type="text"

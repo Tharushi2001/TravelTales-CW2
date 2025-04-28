@@ -16,4 +16,5 @@ router.get("/blog/:postId", blogController.getSingleBlogPost);
 
 
 
+
 module.exports=router;

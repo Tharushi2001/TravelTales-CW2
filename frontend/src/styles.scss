@@ -150,6 +150,10 @@ $lightgreen: #b9e7e7;
         padding: 20px;
       }
 
+      .post-meta{
+        gap: 80px;
+      }
+
       .post-meta,
       .post-stats {
         display: flex;
@@ -311,13 +315,13 @@ $lightgreen: #b9e7e7;
 }
 
 .submit-comment-btn {
-  padding: 6px 12px;
-  margin-left: 5px;
-  background-color: #4caf50;
+  border-radius: 20px;
+  height: 30px;
+  width: 120px;
+  background-color: #169976;
   color: white;
   border: none;
-  cursor: pointer;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .comment-list {
@@ -329,24 +333,27 @@ $lightgreen: #b9e7e7;
 .comment-list li {
   margin-bottom: 5px;
 }
-.edit-post-btn, .delete-post-btn {
-  padding: 10px 20px;
-  margin-top: 10px;
-  cursor: pointer;
-  background-color: #007BFF;
-  color: rgb(225, 6, 6);
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
+
+.create-post-btn{
+  border-radius: 20px;
+  height: 30px;
+  width: 120px;
+  background-color: #255F38;
+  color: white;
 }
 
-.delete-post-btn {
-  background-color: #DC3545; /* Red for delete */
+.read-more-btn{
+  border-radius: 20px;
+  height: 20px;
+  width: 80px;
+  background-color:#255F38;
+ color:  white;
+ border: none;
+ font-size: 12px;
 }
 
-.edit-post-btn:hover, .delete-post-btn:hover {
-  opacity: 0.8;
-}
+
+
 /* Container for the image and overlay */
 .SingleBanner-image {
   position: relative;

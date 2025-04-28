@@ -16,9 +16,7 @@ const Home = () => {
 
   const fetchPosts = useCallback(async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/blogs/blog?sort=${sortOption}`
-      );
+      const res = await axios.get(`http://localhost:5000/api/blogs/blog?sort=${sortOption}`);
       console.log("Fetched posts:", res.data);
       setPosts(res.data);
     } catch (err) {
@@ -99,7 +97,7 @@ const Home = () => {
     }
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/blogs/${postId}`, {
+        await axios.delete(`http://localhost:5000/api/blogs/blog/delete/${postId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchPosts();
@@ -150,7 +148,7 @@ const Home = () => {
                   </div>
                   <div className="post-meta">
                     <span>Country: {post.country}</span>
-                    <span>🧑‍💻 {post.username}</span>
+                    <span>Author: {post.username}</span>
                   </div>
 
                   <p className="post-content">
@@ -212,22 +210,28 @@ const Home = () => {
                     Comment
                   </button>
                 </div>
-               
 
-                <div className="post-actions">
-  <i
-    className="fas fa-edit edit-post-icon"
-    onClick={() => navigate(`/edit-post/${post.id}`)}
-    title="Edit Post"
-  />
-  <i
-    className="fas fa-trash-alt delete-post-icon"
-    onClick={() => handleDeletePost(post.id)}
-    title="Delete Post"
-  />
-</div>
-
-              
+                {/* Edit and Delete Buttons (Only show if user is owner) */}
+                
+                  <div className="post-actions">
+                    <button
+                      className="action-button edit-post-icon"
+                      onClick={() => navigate(`/edit-post/${post.id}`)}
+                      title="Edit Post"
+                      aria-label="Edit Post"
+                    >
+                      <i className="fa fa-pencil"></i>
+                    </button>
+                    <button
+                      className="action-button delete-post-icon"
+                      onClick={() => handleDeletePost(post.id)}
+                      title="Delete Post"
+                      aria-label="Delete Post"
+                    >
+                      <i className="fa fa-trash"></i>
+                    </button>
+                  </div>
+             
               </div>
             ))
           ) : (
