@@ -2,22 +2,24 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import bannerImg from "../img/Banner-img.jpg";
-import "font-awesome/css/font-awesome.min.css"; // Import Font Awesome icons
+import "font-awesome/css/font-awesome.min.css";
+import FollowButton from "../components/FollowButton";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [commentInputs, setCommentInputs] = useState({});
   const [sortOption, setSortOption] = useState("newest");
+  const [followingList, setFollowingList] = useState([]);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
   const username = localStorage.getItem("username");
+  const currentUserId = localStorage.getItem("userId");
 
   const fetchPosts = useCallback(async () => {
     try {
       const res = await axios.get(`http://localhost:5000/api/blogs/blog?sort=${sortOption}`);
-      console.log("Fetched posts:", res.data);
       setPosts(res.data);
     } catch (err) {
       console.error("Error fetching posts:", err);
@@ -26,7 +28,20 @@ const Home = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [fetchPosts]);
+
+    const fetchFollowing = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/follow/${currentUserId}/following`);
+        setFollowingList(res.data.map((user) => user.id));
+      } catch (err) {
+        console.error("Error fetching following list:", err.message);
+      }
+    };
+
+    if (currentUserId) {
+      fetchFollowing();
+    }
+  }, [fetchPosts, currentUserId]);
 
   const handleCreatePost = () => {
     if (token) {
@@ -148,7 +163,16 @@ const Home = () => {
                   </div>
                   <div className="post-meta">
                     <span>Country: {post.country}</span>
-                    <span>Author: {post.username}</span>
+                    <div className="post-author-follow">
+                      <span>Author: {post.username}</span>
+                      {parseInt(post.user_id) !== parseInt(currentUserId) && (
+                        <FollowButton
+                          currentUserId={parseInt(currentUserId)}
+                          targetUserId={parseInt(post.user_id)}
+                          initiallyFollowing={followingList.includes(post.user_id)}
+                        />
+                      )}
+                    </div>
                   </div>
 
                   <p className="post-content">
@@ -181,7 +205,6 @@ const Home = () => {
                   </span>
                 </div>
 
-                {/* Comment Section */}
                 <div className="comment-section">
                   {post.comments && post.comments.length > 0 ? (
                     <div className="comments-list">
@@ -211,8 +234,7 @@ const Home = () => {
                   </button>
                 </div>
 
-                {/* Edit and Delete Buttons (Only show if user is owner) */}
-                
+                {post.username === username && (
                   <div className="post-actions">
                     <button
                       className="action-button edit-post-icon"
@@ -231,11 +253,12 @@ const Home = () => {
                       <i className="fa fa-trash"></i>
                     </button>
                   </div>
-             
+                )}
               </div>
             ))
           ) : (
             <p className="no-posts">No posts found.</p>
+            
           )}
         </div>
       </div>

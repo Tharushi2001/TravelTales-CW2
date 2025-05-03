@@ -142,3 +142,27 @@ exports.searchBlogPostsByUsername = (username) => {
     });
   });
 };
+
+// Get posts by user IDs
+exports.getPostsByUserIds = (userIds) => {
+  // Check if userIds array is not empty before querying
+  if (userIds.length === 0) {
+    return Promise.resolve([]); // Return an empty array if no user IDs
+  }
+
+  const sql = `
+    SELECT blog_posts.*, users.username
+    FROM blog_posts
+    JOIN users ON blog_posts.user_id = users.id
+    WHERE blog_posts.user_id IN (?)
+    ORDER BY blog_posts.date_of_visit DESC
+  `;
+  
+  return new Promise((resolve, reject) => {
+    db.query(sql, [userIds], (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+

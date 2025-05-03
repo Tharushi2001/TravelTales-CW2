@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
@@ -5,10 +6,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateBlogPost from "./pages/CreateBlogPost";
 import ViewPost from "./pages/ViewPost";
-import EditPost from "./pages/EditPost"; // ✅ Import EditPost
+import EditPost from "./pages/EditPost"; 
 import Layout from "./components/Layout";
-import ProtectedRoute from "./components/protectedRoute"; // ✅ Import ProtectedRoute
-import Search from "./pages/search"; // ✅ Import Search
+import ProtectedRoute from "./components/protectedRoute";
+import Search from "./pages/search";
+import UserProfile from "./pages/UserProfile";
+import FollowedFeedPage from "./pages/FollowedFeedPage"; // Import FollowedFeedPage
 import './styles.scss';
 
 const router = createBrowserRouter([
@@ -33,7 +36,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "edit-post/:id", // ✅ Proper EditPost route inside Layout
+        path: "edit-post/:id",
         element: (
           <ProtectedRoute>
             <EditPost />
@@ -41,8 +44,12 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "search", // ✅ Add Search route
+        path: "search", 
         element: <Search />, 
+      },
+      {
+        path: "followed-feed",  // Add the FollowedFeedPage route
+        element: <FollowedFeedPage />,
       },
     ],
   },
@@ -53,6 +60,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "user-profile/:userId", 
+    element: <UserProfile />, 
   },
 ]);
 

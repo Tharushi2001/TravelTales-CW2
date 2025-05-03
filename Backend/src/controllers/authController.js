@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userDao = require('../dao/userDao');
+
 require('dotenv').config();
 
 // Register user
@@ -60,22 +61,20 @@ exports.login = (req, res) => {
           maxAge: 3600000,  // 1 hour
         });
 
-        res.status(200).json({ message: 'Login successful',
+        res.status(200).json({
+          message: 'Login successful',
           token,
-          username:user.username,
-
-         });
+          username: user.username,
+          userId: user.id, 
+        });
       });
     })
     .catch((error) => res.status(500).json({ message: 'Database error', error }));
 };
 
-
 // Logout user
 exports.logout = (req, res) => {
   try {
-   
-
     // Log cookie clearing for debugging
     console.log("Clearing accessToken cookie...");
 
@@ -93,4 +92,22 @@ exports.logout = (req, res) => {
     console.error('Logout error:', error);
     res.status(500).json({ message: 'Error logging out' });
   }
+};
+
+// Get user by ID
+exports.getUserById = (req, res) => {
+  const { userId } = req.params;
+
+  // Use the userDao to fetch user data from MySQL
+  userDao.getUserById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      return res.json({ username: user.username, email: user.email });
+    })
+    .catch((error) => {
+      console.error('Error fetching user:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    });
 };

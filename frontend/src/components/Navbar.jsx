@@ -5,6 +5,7 @@ import Logo from "../img/logo.jpg";
 const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token"); // Check if token exists
+  const userId = localStorage.getItem("userId"); // Assuming userId is saved in localStorage
 
   const handleLogout = async () => {
     try {
@@ -14,6 +15,7 @@ const Navbar = () => {
       });
 
       localStorage.removeItem("token"); // Important: clear token
+      localStorage.removeItem("userId"); // Remove userId
       alert("Logged out successfully!");
       navigate("/login"); // Redirect to login page
     } catch (error) {
@@ -27,13 +29,15 @@ const Navbar = () => {
       <div className="container">
         <div className="logo">
           <Link to="/">
-            <img src={Logo} alt="TravelTales Logo" />
+            <img src={Logo} alt="Logo" />
           </Link>
         </div>
         <div className="links">
           <Link to="/" className="link">Home</Link>
           <Link to="/search" className="link">Search</Link>
-
+          {token && (
+            <Link to="/followed-feed" className="link">Followed Feed</Link>
+          )}
           {!token ? (
             <>
               <Link to="/login" className="link">Login</Link>
@@ -41,17 +45,12 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/profile" className="link">User Profile</Link>
+              {userId && (
+                <Link to={`/user-profile/${userId}`} className="link">User Profile</Link>
+              )}
               <button
                 onClick={handleLogout}
-                className="link"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '0',
-                  color: '#007bff',
-                }}
+                className="logout-btn"
               >
                 Logout
               </button>

@@ -26,6 +26,7 @@ const Login = () => {
       if (response.data && response.data.token) {
         localStorage.setItem("token", response.data.token);
         alert("Login successful!");
+        localStorage.setItem("userId", response.data.userId);
 
         const redirectTo = location.state?.from || "/";
         navigate(redirectTo);

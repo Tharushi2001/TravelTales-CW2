@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser'); // Import cookie-parser
 const authRoutes = require('./routes/authRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const followRoutes = require('./routes/followRoutes');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes); // Auth routes for user login, register, logout
 app.use('/api/blogs', blogRoutes); // Blog routes for your blog-related API
 app.use('/api/search', searchRoutes);
+app.use('/api/follow', followRoutes);
 
 
 // Start server
