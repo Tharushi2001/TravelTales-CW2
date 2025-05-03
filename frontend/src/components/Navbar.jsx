@@ -4,20 +4,20 @@ import Logo from "../img/logo.jpg";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token"); // Check if token exists
-  const userId = localStorage.getItem("userId"); // Assuming userId is saved in localStorage
+  const token = localStorage.getItem("token"); 
+  const userId = localStorage.getItem("userId"); 
 
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:5000/api/auth/logout", {
         method: "POST",
-        credentials: "include", // Optional: clear backend cookie
+        credentials: "include", 
       });
 
-      localStorage.removeItem("token"); // Important: clear token
-      localStorage.removeItem("userId"); // Remove userId
+      localStorage.removeItem("token"); 
+      localStorage.removeItem("userId"); 
       alert("Logged out successfully!");
-      navigate("/login"); // Redirect to login page
+      navigate("/login"); 
     } catch (error) {
       console.error("Logout error:", error);
       alert("An error occurred during logout");

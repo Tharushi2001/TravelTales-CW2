@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import bannerImg from "../img/Banner-img.jpg";
+import cardImg from "../img/card-image.png";
 import "font-awesome/css/font-awesome.min.css";
 import FollowButton from "../components/FollowButton";
 
@@ -19,7 +20,9 @@ const Home = () => {
 
   const fetchPosts = useCallback(async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/blogs/blog?sort=${sortOption}`);
+      const res = await axios.get(
+        `http://localhost:5000/api/blogs/blog?sort=${sortOption}`
+      );
       setPosts(res.data);
     } catch (err) {
       console.error("Error fetching posts:", err);
@@ -31,7 +34,9 @@ const Home = () => {
 
     const fetchFollowing = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/follow/${currentUserId}/following`);
+        const res = await axios.get(
+          `http://localhost:5000/api/follow/${currentUserId}/following`
+        );
         setFollowingList(res.data.map((user) => user.id));
       } catch (err) {
         console.error("Error fetching following list:", err.message);
@@ -60,9 +65,7 @@ const Home = () => {
       const res = await axios.post(
         `http://localhost:5000/api/blogs/like/${postId}`,
         {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.status === 200) {
         const updatedPosts = posts.map((post) =>
@@ -87,6 +90,7 @@ const Home = () => {
       navigate("/login");
       return;
     }
+
     const comment = commentInputs[postId];
     if (!comment) return;
 
@@ -94,9 +98,7 @@ const Home = () => {
       await axios.post(
         `http://localhost:5000/api/blogs/comment/${postId}`,
         { content: comment },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
       fetchPosts();
@@ -110,11 +112,13 @@ const Home = () => {
       navigate("/login");
       return;
     }
+
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/blogs/blog/delete/${postId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axios.delete(
+          `http://localhost:5000/api/blogs/blog/delete/${postId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         fetchPosts();
       } catch (err) {
         console.error("Error deleting post:", err.response?.data || err.message);
@@ -157,12 +161,56 @@ const Home = () => {
             posts.map((post) => (
               <div className="post-wrapper" key={post.id}>
                 <div className="post-card">
-                  <div className="post-header">
-                    <h2>{post.title}</h2>
-                    <span>{new Date(post.date_of_visit).toLocaleDateString()}</span>
+                  <div className="post-topsection">
+                    <div className="post-header">
+                      <div className="image-container">
+                        <img src={cardImg} alt="Banner" className="card-img" />
+                        <div className="overlay">
+                          <h2>{post.title}</h2>
+                          <span>{new Date(post.date_of_visit).toLocaleDateString()}</span>
+                          <span>Country: {post.country}</span>
+
+                          <p className="post-content">
+                            {post.content.length > 150
+                              ? `${post.content.slice(0, 150)}...`
+                              : post.content}
+                          </p>
+
+                          {post.content.length > 150 && (
+                            <button
+                              className="read-more-btn"
+                              onClick={() => navigate(`/view-post/${post.id}`)}
+                            >
+                              Read More
+                            </button>
+                          )}
+
+                          {parseInt(post.user_id) === parseInt(currentUserId) && (
+                            <div className="post-actions">
+                              <button
+                                className="action-button edit-post-icon"
+                                onClick={() => navigate(`/edit-post/${post.id}`)}
+                                title="Edit Post"
+                                aria-label="Edit Post"
+                              >
+                                Edit <i className="fa fa-pencil"></i>
+                              </button>
+                              <button
+                                className="action-button delete-post-icon"
+                                onClick={() => handleDeletePost(post.id)}
+                                title="Delete Post"
+                                aria-label="Delete Post"
+                              >
+                                <i className="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
                   <div className="post-meta">
-                    <span>Country: {post.country}</span>
                     <div className="post-author-follow">
                       <span>Author: {post.username}</span>
                       {parseInt(post.user_id) !== parseInt(currentUserId) && (
@@ -174,34 +222,21 @@ const Home = () => {
                       )}
                     </div>
                   </div>
-
-                  <p className="post-content">
-                    {post.content.length > 150
-                      ? `${post.content.slice(0, 150)}...`
-                      : post.content}
-                  </p>
-
-                  {post.content.length > 150 && (
-                    <button
-                      className="read-more-btn"
-                      onClick={() => navigate(`/view-post/${post.id}`)}
-                    >
-                      Read More
-                    </button>
-                  )}
                 </div>
 
                 <div className="social-features">
                   <button
                     onClick={() => handleLikePost(post.id)}
-                    className={`like-btn ${likedPosts.includes(post.id) ? "liked" : ""}`}
+                    className={`like-btn ${
+                      likedPosts.includes(post.id) ? "liked" : ""
+                    }`}
                   >
                     <i className="fa fa-thumbs-up" />
                   </button>
                   <span className="like-count">{post.likes} Likes</span>
-
                   <span className="comment-count">
-                    <i className="fa fa-comment" /> {post.comments?.length ?? 0} Comments
+                    <i className="fa fa-comment" />{" "}
+                    {post.comments?.length ?? 0} Comments
                   </span>
                 </div>
 
@@ -210,7 +245,9 @@ const Home = () => {
                     <div className="comments-list">
                       {post.comments.map((comment) => (
                         <div key={comment.id} className="comment">
-                          <span className="comment-author">{comment.username}</span>
+                          <span className="comment-author">
+                            {comment.username}
+                          </span>
                           <p className="comment-content">{comment.content}</p>
                         </div>
                       ))}
@@ -223,7 +260,9 @@ const Home = () => {
                     type="text"
                     placeholder="Write a comment..."
                     value={commentInputs[post.id] || ""}
-                    onChange={(e) => handleCommentInputChange(post.id, e.target.value)}
+                    onChange={(e) =>
+                      handleCommentInputChange(post.id, e.target.value)
+                    }
                     className="comment-input"
                   />
                   <button
@@ -233,32 +272,10 @@ const Home = () => {
                     Comment
                   </button>
                 </div>
-
-                {post.username === username && (
-                  <div className="post-actions">
-                    <button
-                      className="action-button edit-post-icon"
-                      onClick={() => navigate(`/edit-post/${post.id}`)}
-                      title="Edit Post"
-                      aria-label="Edit Post"
-                    >
-                      <i className="fa fa-pencil"></i>
-                    </button>
-                    <button
-                      className="action-button delete-post-icon"
-                      onClick={() => handleDeletePost(post.id)}
-                      title="Delete Post"
-                      aria-label="Delete Post"
-                    >
-                      <i className="fa fa-trash"></i>
-                    </button>
-                  </div>
-                )}
               </div>
             ))
           ) : (
             <p className="no-posts">No posts found.</p>
-            
           )}
         </div>
       </div>

@@ -117,54 +117,99 @@ $lightgreen: #b9e7e7;
       border: 1px solid #ccc;
     }
   }
-
   .post-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 50px;
-
+  
     .post-card {
-      background: #169976;
       border-radius: 8px;
-      padding: 40px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  
 
+    
+      .post-topsection {
+        position: relative;
+      }
+      
+      .image-container {
+        position: relative;
+      }
+      
+      .card-img {
+        width: 100%; /* Ensures the image takes up the full width */
+        height: auto; /* Maintains aspect ratio */
+        max-height: 300px; /* Set the desired maximum height */
+        object-fit: cover; /* Ensures the image covers the container without distortion */
+      }
+      .overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white; /* Change the text color to stand out on the image */
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5); /* Optional: to create a semi-transparent background */
+   
+        border-radius: 5px;
+      }
+      
+      .overlay h2 {
+        margin-top: 20px ;
+      }
+      
+      .overlay span {
+        display: block;
+        margin-top: 5px;
+      }
+      
+  
       .post-header {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: white;
-
-
-        span {
-          font-size: 14px;
-          color:white;
-        }
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Optional text shadow for readability */
+        z-index: 1; /* Ensure text appears above background */
       }
-
+  
+      .post-header h2 {
+        margin: 20px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+  
+      .post-header span {
+        font-size: 14px;
+        color: white;
+      }
+  
       .post-content {
         margin: 10px 0;
         font-size: 18px;
-        color: #444;
-        background: #a3e3c5;
+        color: #ffffff;
+    
         padding: 20px;
       }
-
-      .post-meta{
-        gap: 40px;
-      }
-
+  
+ 
+  
       .post-meta,
       .post-stats {
         display: flex;
-   
         font-size: 16px;
-        color: #f3f3f3;
+        color: #000000;
         margin-top: 6px;
+        gap: 30px;
       }
+      .post-author-follow {
+        display: flex;
+        align-items: center;
+        gap: 230px;
+      }
+      
     }
   }
-
+  
   .no-posts {
     text-align: center;
     font-size: 16px;
@@ -271,7 +316,7 @@ $lightgreen: #b9e7e7;
 }
 
 .post-wrapper {
-  border: 1px solid #ccc;
+
   border-radius: 10px;
   margin-bottom: 2rem;
   padding: 1rem;
@@ -344,12 +389,42 @@ $lightgreen: #b9e7e7;
 
 .read-more-btn{
   border-radius: 20px;
-  height: 20px;
-  width: 80px;
-  background-color:#255F38;
+  height: 30px;
+  width: 100px;
+  background-color:#0aae40;
+
  color:  white;
  border: none;
  font-size: 12px;
+}
+.post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: -10px;
+  margin-right: 10px;
+}
+
+.action-button {
+  padding: 3px 9px;
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.action-button:hover {
+  background-color: #ddd;
+}
+
+.edit-post-icon i {
+  margin-left: 5px;
+}
+
+.delete-post-icon i {
+  color: red;
 }
 
 
@@ -616,11 +691,11 @@ $lightgreen: #b9e7e7;
 .follow-btn {
   background-color: #007bff;
   color: white;
-  padding: 6px 12px;
+  padding: 9px 12px;
   margin-left: 4px;
   border: none;
   border-radius: 6px;
-  font-size: 0.7rem;
+  font-size: 12px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -640,4 +715,64 @@ $lightgreen: #b9e7e7;
 
 .follow-btn.following:hover {
   background-color: #5a6268;
+}
+
+/* FollowedFeed.css */
+
+.feed-container {
+  padding: 20px;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.feed-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #005f5f;
+  margin-bottom: 20px;
+}
+
+.feed-error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.feed-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.feed-card {
+  background-color: white;
+  border-left: 6px solid #3ed469;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 95, 95, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.feed-card:hover {
+  transform: translateY(-5px);
+}
+
+.feed-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #005f5f;
+  margin-bottom: 10px;
+}
+
+.feed-card-content {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.feed-card-author {
+  font-size: 14px;
+  color: #007a7a;
+  font-style: italic;
 }
