@@ -13,7 +13,7 @@ exports.createBlogPost = (userId, title, content, country, date_of_visit) => {
 
 // Get all blog posts with the username of the post owner
 exports.getAllBlogPosts = (sortOption) => {
-  let orderByClause = 'blog_posts.date_of_visit DESC';  // Default sorting by newest
+  let orderByClause = 'blog_posts.created_at DESC';  // Use actual column name from your DB
 
   if (sortOption === 'mostLiked') {
     orderByClause = 'like_count DESC';
@@ -22,16 +22,16 @@ exports.getAllBlogPosts = (sortOption) => {
   }
 
   const sql = `
-    SELECT blog_posts.*, users.username, 
-           COALESCE(COUNT(likes.id), 0) AS like_count,
-           COALESCE(COUNT(comments.id), 0) AS comment_count
-    FROM blog_posts
-    JOIN users ON blog_posts.user_id = users.id
-    LEFT JOIN likes ON blog_posts.id = likes.post_id
-    LEFT JOIN comments ON blog_posts.id = comments.post_id
-    GROUP BY blog_posts.id, users.username
-    ORDER BY ${orderByClause}
+   SELECT blog_posts.*, 
+       users.username,
+       (SELECT COUNT(*) FROM likes l WHERE l.post_id = blog_posts.id) AS like_count,
+       (SELECT COUNT(*) FROM comments c WHERE c.post_id = blog_posts.id) AS comment_count
+FROM blog_posts
+JOIN users ON blog_posts.user_id = users.id
+ORDER BY ${orderByClause};
+
   `;
+
   
   return new Promise((resolve, reject) => {
     db.query(sql, (err, results) => {

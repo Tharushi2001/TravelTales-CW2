@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // updated import
+import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
+
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -69,6 +70,7 @@ const Register = () => {
           {isLoading ? "Registering..." : "Register"}
         </button>
       </form>
+
     </div>
   );
 };

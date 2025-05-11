@@ -234,14 +234,14 @@ const Home = () => {
                     <i className="fa fa-thumbs-up" />
                   </button>
                   <span className="like-count">{post.likes} Likes</span>
-                  <span className="comment-count">
-                    <i className="fa fa-comment" />{" "}
-                    {post.comments?.length ?? 0} Comments
+                     <span className="comment-count">
+                    <i className="fa fa-comment" /> {post.comment_count} Comments
                   </span>
+
                 </div>
 
                 <div className="comment-section">
-                {post.comments && post.comments.length > 0 ? (
+        {post.comment_count > 0 && post.comments ? (
   <div className="comments-list">
     {post.comments.map((comment) => (
       <div key={comment.id} className="comment">
@@ -250,9 +250,8 @@ const Home = () => {
       </div>
     ))}
   </div>
-) : (
-  <p>No comments yet.</p>
-)}
+) : null} 
+
 
                   <input
                     type="text"

@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
@@ -52,6 +51,10 @@ const router = createBrowserRouter([
         path: "followed-feed",
         element: <FollowedFeedPage />,
       },
+      {
+    path: "user-profile/:userId", 
+    element: <UserProfile />, 
+  },
     ],
   },
   {
@@ -62,10 +65,7 @@ const router = createBrowserRouter([
     path: "/register",
     element: <Register />,
   },
-  {
-    path: "user-profile/:userId", 
-    element: <UserProfile />, 
-  },
+  
 ]);
 
 function App() {
