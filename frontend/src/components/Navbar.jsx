@@ -1,3 +1,4 @@
+// src/components/Navbar.js
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../img/logo.jpg";
@@ -11,13 +12,13 @@ const Navbar = () => {
     try {
       await fetch("http://localhost:5000/api/auth/logout", {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
       });
 
-      localStorage.removeItem("token"); 
-      localStorage.removeItem("userId"); 
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
       alert("Logged out successfully!");
-      navigate("/login"); 
+      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
       alert("An error occurred during logout");
@@ -35,6 +36,7 @@ const Navbar = () => {
         <div className="links">
           <Link to="/" className="link">Home</Link>
           <Link to="/search" className="link">Search</Link>
+        
           {token && (
             <Link to="/followed-feed" className="link">Followed Feed</Link>
           )}
@@ -48,10 +50,7 @@ const Navbar = () => {
               {userId && (
                 <Link to={`/user-profile/${userId}`} className="link">User Profile</Link>
               )}
-              <button
-                onClick={handleLogout}
-                className="logout-btn"
-              >
+              <button onClick={handleLogout} className="logout-btn">
                 Logout
               </button>
             </>

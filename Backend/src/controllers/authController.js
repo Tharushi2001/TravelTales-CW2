@@ -30,14 +30,11 @@ exports.register = (req, res) => {
 exports.login = (req, res) => {
   const { username, password } = req.body;
 
-  // Retrieve user from database by username
   userDao.getUserByUsername(username)
     .then((user) => {
       if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
       }
-
-      // Compare the provided password with the stored hashed password
       bcrypt.compare(password, user.password, (err, isMatch) => {
         if (err || !isMatch) {
           return res.status(401).json({ message: 'Invalid username or password' });
@@ -49,16 +46,15 @@ exports.login = (req, res) => {
           process.env.JWT_SECRET,
           { expiresIn: '1h' }
         );
-
-        // Log token generation for debugging
+   
         console.log("Setting cookie with token:", token);
 
         // Set cookie with JWT token
         res.cookie('accessToken', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',  // Use secure cookies in production
-          sameSite: 'None',  // Important for cross-site cookies
-          maxAge: 3600000,  // 1 hour
+          secure: process.env.NODE_ENV === 'production', 
+          sameSite: 'None',  
+          maxAge: 3600000, 
         });
 
         res.status(200).json({
@@ -75,7 +71,6 @@ exports.login = (req, res) => {
 // Logout user
 exports.logout = (req, res) => {
   try {
-    // Log cookie clearing for debugging
     console.log("Clearing accessToken cookie...");
 
     // Clear the accessToken cookie
@@ -83,22 +78,22 @@ exports.logout = (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'None',
-      path: '/',  // Make sure the path matches where the cookie was set
+      path: '/', 
     });
 
     res.status(200).json({ message: 'Logged out successfully' });
   } catch (error) {
-    // Handle unexpected errors
+ 
     console.error('Logout error:', error);
     res.status(500).json({ message: 'Error logging out' });
   }
 };
 
-// Get user by ID
+
 exports.getUserById = (req, res) => {
   const { userId } = req.params;
 
-  // Use the userDao to fetch user data from MySQL
+
   userDao.getUserById(userId)
     .then((user) => {
       if (!user) {

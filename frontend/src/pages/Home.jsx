@@ -241,20 +241,18 @@ const Home = () => {
                 </div>
 
                 <div className="comment-section">
-                  {post.comments && post.comments.length > 0 ? (
-                    <div className="comments-list">
-                      {post.comments.map((comment) => (
-                        <div key={comment.id} className="comment">
-                          <span className="comment-author">
-                            {comment.username}
-                          </span>
-                          <p className="comment-content">{comment.content}</p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No comments yet.</p>
-                  )}
+                {post.comments && post.comments.length > 0 ? (
+  <div className="comments-list">
+    {post.comments.map((comment) => (
+      <div key={comment.id} className="comment">
+        <span className="comment-author">{comment.username}</span>
+        <p className="comment-content">{comment.content}</p>
+      </div>
+    ))}
+  </div>
+) : (
+  <p>No comments yet.</p>
+)}
 
                   <input
                     type="text"

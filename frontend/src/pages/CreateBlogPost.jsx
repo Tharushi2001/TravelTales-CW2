@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,13 +7,48 @@ const CreateBlogPost = () => {
   const [content, setContent] = useState("");
   const [country, setCountry] = useState("");
   const [dateOfVisit, setDateOfVisit] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [countryDetails, setCountryDetails] = useState(null);
   const navigate = useNavigate();
+
+  // Fetch list of countries when the component mounts
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+        const countryNames = response.data.map((country) => ({
+          name: country.name.common,
+          code: country.cca2, // You can also use cca3 or name.common as identifiers
+        }));
+        setCountries(countryNames);
+      } catch (error) {
+        console.error("Error fetching country data:", error.message);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const handleCountryChange = async (e) => {
+    const countryName = e.target.value;
+    setCountry(countryName);
+
+    if (countryName) {
+      // Fetch details of the selected country
+      try {
+        const response = await axios.get(`http://localhost:5000/api/country/${countryName}`);
+        setCountryDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching country details:", error.message);
+      }
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       alert("You need to be logged in to create a blog post.");
       return;
@@ -26,14 +61,14 @@ const CreateBlogPost = () => {
           title,
           content,
           country,
-          date_of_visit: dateOfVisit, // Send field names matching backend expectation
+          date_of_visit: dateOfVisit,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Explicitly mention content type
+            "Content-Type": "application/json",
           },
-          withCredentials: true, // Important if backend also checks cookies
+          withCredentials: true,
         }
       );
 
@@ -76,13 +111,34 @@ const CreateBlogPost = () => {
           required
           rows="8"
         />
-        <input
-          type="text"
-          placeholder="Country"
+        <select
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={handleCountryChange}
           required
-        />
+        >
+          <option value="">Select a Country</option>
+          {countries.map((country) => (
+            <option key={country.code} value={country.name}>
+              {country.name}
+            </option>
+          ))}
+        </select>
+
+        {countryDetails && (
+          <div className="country-details">
+            <p><strong>Capital:</strong> {countryDetails.capital}</p>
+            <p><strong>Currency:</strong> {countryDetails.currency}</p>
+            <p>
+              <strong>Flag:</strong>
+              <img
+                src={countryDetails.flag}
+                alt={`${countryDetails.name} flag`}
+                style={{ width: "100px" }}
+              />
+            </p>
+          </div>
+        )}
+
         <input
           type="date"
           value={dateOfVisit}

@@ -54,9 +54,8 @@ exports.getFollowingIds = (userId) => {
         console.error('Error fetching following IDs:', err);
         reject(err);
       } else {
-        // Transform results to an array of IDs
-        const followingIds = results.map(result => result.following_id);
-        resolve(followingIds); // [2, 3, 5]
+       const followingIds = results.map(result => result.following_id);
+        resolve(followingIds);
       }
     });
   });
@@ -86,7 +85,7 @@ exports.getFollowersCount = (userId) => {
         console.error('Error fetching followers count:', err);
         reject(err);
       } else {
-        resolve(results[0].count); // Get count from the result
+        resolve(results[0].count); 
       }
     });
   });
@@ -101,7 +100,7 @@ exports.getFollowingCount = (userId) => {
         console.error('Error fetching following count:', err);
         reject(err);
       } else {
-        resolve(results[0].count); // Get count from the result
+        resolve(results[0].count); 
       }
     });
   });

@@ -125,8 +125,7 @@ $lightgreen: #b9e7e7;
     .post-card {
       border-radius: 8px;
   
-
-    
+  
       .post-topsection {
         position: relative;
       }
@@ -136,19 +135,19 @@ $lightgreen: #b9e7e7;
       }
       
       .card-img {
-        width: 100%; /* Ensures the image takes up the full width */
-        height: auto; /* Maintains aspect ratio */
-        max-height: 300px; /* Set the desired maximum height */
-        object-fit: cover; /* Ensures the image covers the container without distortion */
+        width: 100%; 
+        height: auto; 
+        max-height: 300px;
+        object-fit: cover;
       }
       .overlay {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: white; /* Change the text color to stand out on the image */
+        color: white; 
         text-align: center;
-        background: rgba(0, 0, 0, 0.5); /* Optional: to create a semi-transparent background */
+        background: rgba(0, 0, 0, 0.5); 
    
         border-radius: 5px;
       }
@@ -168,8 +167,8 @@ $lightgreen: #b9e7e7;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Optional text shadow for readability */
-        z-index: 1; /* Ensure text appears above background */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
+        z-index: 1; 
       }
   
       .post-header h2 {
@@ -427,9 +426,6 @@ $lightgreen: #b9e7e7;
   color: red;
 }
 
-
-
-/* Container for the image and overlay */
 .SingleBanner-image {
   position: relative;
   width: 100%;
@@ -466,15 +462,12 @@ $lightgreen: #b9e7e7;
   padding: 0 1rem;
 }
 
-/* Blog Post Container */
 .view-post-container {
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
-/* Flex layout for author and post details */
 .post-header {
   display: flex;
   align-items: flex-start;
@@ -487,29 +480,21 @@ $lightgreen: #b9e7e7;
   margin-top: 20px;
 }
 
-/* Align this next to author with same top line */
 .post-info {
   flex: 1;
   font-size: 16px;
 }
 
-/* Content starts aligned with post-info */
 .post-body {
   margin-left: 200px; 
   margin-right: 120px;
   font-size: 18px;
    line-height: 1.5;
 }
-
-
   .outer-box {
     width: 100%;
     max-width: 800px;
   }
-
-
-  
-
 .main-container {
   min-height: 80vh;
   background-color: #169976; 
@@ -775,4 +760,108 @@ $lightgreen: #b9e7e7;
   font-size: 14px;
   color: #007a7a;
   font-style: italic;
+}
+/* Container styling */
+.country-selector select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color:  #005f5f;
+  color: white;
+ 
+  font-size: 16px;
+  outline: none;
+  width: 100%;
+  margin-top: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+/* Optional: style the dropdown arrow */
+.country-selector select::-ms-expand {
+  display: none;
+}
+
+
+
+/* EditPost.css */
+.edit-post-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.edit-post-container h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.edit-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-post-form input,
+.edit-post-form textarea {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.edit-post-form input:focus,
+.edit-post-form textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.edit-post-form input[type="date"] {
+  cursor: pointer;
+}
+
+.edit-post-form textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.update-post-btn {
+  padding: 12px;
+  background-color: #3498db;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-post-btn:hover {
+  background-color: #2980b9;
+}
+
+.update-post-btn:active {
+  background-color: #1c6ca7;
+}
+
+@media (max-width: 600px) {
+  .edit-post-container {
+    padding: 15px;
+  }
+
+  .edit-post-form input,
+  .edit-post-form textarea {
+    font-size: 0.9rem;
+  }
+
+  .update-post-btn {
+    font-size: 0.9rem;
+  }
 }

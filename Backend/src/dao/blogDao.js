@@ -12,13 +12,27 @@ exports.createBlogPost = (userId, title, content, country, date_of_visit) => {
 };
 
 // Get all blog posts with the username of the post owner
-exports.getAllBlogPosts = () => {
+exports.getAllBlogPosts = (sortOption) => {
+  let orderByClause = 'blog_posts.date_of_visit DESC';  // Default sorting by newest
+
+  if (sortOption === 'mostLiked') {
+    orderByClause = 'like_count DESC';
+  } else if (sortOption === 'mostCommented') {
+    orderByClause = 'comment_count DESC';
+  }
+
   const sql = `
-    SELECT blog_posts.*, users.username
+    SELECT blog_posts.*, users.username, 
+           COALESCE(COUNT(likes.id), 0) AS like_count,
+           COALESCE(COUNT(comments.id), 0) AS comment_count
     FROM blog_posts
     JOIN users ON blog_posts.user_id = users.id
-    ORDER BY blog_posts.date_of_visit DESC
+    LEFT JOIN likes ON blog_posts.id = likes.post_id
+    LEFT JOIN comments ON blog_posts.id = comments.post_id
+    GROUP BY blog_posts.id, users.username
+    ORDER BY ${orderByClause}
   `;
+  
   return new Promise((resolve, reject) => {
     db.query(sql, (err, results) => {
       if (err) return reject(err);
@@ -26,6 +40,7 @@ exports.getAllBlogPosts = () => {
     });
   });
 };
+
 
 // Get blog post by ID with the username of the post owner
 exports.getBlogPostById = (postId) => {
@@ -100,7 +115,7 @@ exports.addComment = (userId, postId, content) => {
 
 // Get comments for a specific post by postId
 exports.getCommentsByPostId = (postId) => {
-  const sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";  // Assuming 'created_at' exists in your comments table
+  const sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";  
   return new Promise((resolve, reject) => {
     db.query(sql, [postId], (err, results) => {
       if (err) return reject(err);
@@ -145,9 +160,9 @@ exports.searchBlogPostsByUsername = (username) => {
 
 // Get posts by user IDs
 exports.getPostsByUserIds = (userIds) => {
-  // Check if userIds array is not empty before querying
+
   if (userIds.length === 0) {
-    return Promise.resolve([]); // Return an empty array if no user IDs
+    return Promise.resolve([]); 
   }
 
   const sql = `

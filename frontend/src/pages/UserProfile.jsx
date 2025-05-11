@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import FollowersList from '../components/FollowersList';
 import FollowingList from '../components/FollowingList';
+import UserImg from "../img/userprofile.jpg";
 
 function UserProfile() {
   const userId = localStorage.getItem("userId");
@@ -37,9 +38,10 @@ function UserProfile() {
       <div className="profile-header">
         <div className="profile-picture">
           <img
-            src="https://via.placeholder.com/150"
+            src={UserImg}
             alt="Profile"
           />
+                 
         </div>
         <div className="profile-info">
           <h2>{userData.username}</h2>

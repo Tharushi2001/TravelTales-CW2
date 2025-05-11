@@ -1,32 +1,33 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors'); // Import CORS
-const cookieParser = require('cookie-parser'); // Import cookie-parser
+const cors = require('cors'); 
+const cookieParser = require('cookie-parser'); 
 const authRoutes = require('./routes/authRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const followRoutes = require('./routes/followRoutes');
+const countryRoutes = require('./routes/countryRoutes'); 
 
 const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // Your frontend URL
-  methods: 'GET, POST, PUT, DELETE',  // Allowed HTTP methods
-    credentials: true  // Allow credentials (cookies) to be sent
+  origin: 'http://localhost:3000', 
+  methods: 'GET, POST, PUT, DELETE',  
+    credentials: true  
 }));
 
-// Middleware to parse cookies
 app.use(cookieParser()); // Add cookie-parser as middleware
 
 // Body parser middleware to parse incoming JSON requests
 app.use(bodyParser.json());
 
 // API routes
-app.use('/api/auth', authRoutes); // Auth routes for user login, register, logout
-app.use('/api/blogs', blogRoutes); // Blog routes for your blog-related API
+app.use('/api/auth', authRoutes); 
+app.use('/api/blogs', blogRoutes); 
 app.use('/api/search', searchRoutes);
 app.use('/api/follow', followRoutes);
+app.use('/api/country', countryRoutes);
 
 
 // Start server

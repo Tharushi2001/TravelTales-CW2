@@ -17,12 +17,12 @@ exports.registerUser = (username, email, hashedPassword) => {
 // Get user by username
 exports.getUserByUsername = (username) => {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM users WHERE username = ?';  // Query by username instead of email
+    const query = 'SELECT * FROM users WHERE username = ?';  
     db.query(query, [username], (err, results) => {
       if (err) {
         reject(err);
       } else {
-        resolve(results[0]);  // Return the first (and only) matching result
+        resolve(results[0]);  
       }
     });
   });
@@ -36,7 +36,7 @@ exports.getUserById = (userId) => {
       if (err) {
         reject(err);
       } else {
-        resolve(results[0]);  // Return the first (and only) matching result
+        resolve(results[0]);  
       }
     });
   });

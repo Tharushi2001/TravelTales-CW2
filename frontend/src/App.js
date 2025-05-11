@@ -11,7 +11,7 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/protectedRoute";
 import Search from "./pages/search";
 import UserProfile from "./pages/UserProfile";
-import FollowedFeedPage from "./pages/FollowedFeedPage"; // Import FollowedFeedPage
+import FollowedFeedPage from "./pages/FollowedFeedPage"; 
 import './styles.scss';
 
 const router = createBrowserRouter([
@@ -47,8 +47,9 @@ const router = createBrowserRouter([
         path: "search", 
         element: <Search />, 
       },
+    
       {
-        path: "followed-feed",  // Add the FollowedFeedPage route
+        path: "followed-feed",
         element: <FollowedFeedPage />,
       },
     ],

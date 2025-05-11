@@ -77,6 +77,8 @@ exports.getBlogPosts = (req, res) => {
     });
 };
 
+
+
 // Get single blog post by ID
 exports.getSingleBlogPost = (req, res) => {
   const { postId } = req.params;
