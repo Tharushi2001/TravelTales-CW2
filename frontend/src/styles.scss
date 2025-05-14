@@ -851,17 +851,11 @@ $lightgreen: #b9e7e7;
   background-color: #1c6ca7;
 }
 
-@media (max-width: 600px) {
-  .edit-post-container {
-    padding: 15px;
-  }
+.logout-btn{
+ 
+    border-radius: 20px;
+ 
+    width: 80px;
+    background-color: #f9f9f9;
 
-  .edit-post-form input,
-  .edit-post-form textarea {
-    font-size: 0.9rem;
-  }
-
-  .update-post-btn {
-    font-size: 0.9rem;
-  }
 }

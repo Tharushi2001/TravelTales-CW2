@@ -68,16 +68,26 @@ exports.deleteBlogPost = (req, res) => {
 exports.getBlogPosts = (req, res) => {
   blogDao.getAllBlogPosts()
     .then((posts) => {
-      if (!posts.length) return res.status(404).json({ message: 'No blog posts found' });
-      res.status(200).json(posts);
+
+      Promise.all(posts.map((post) =>
+        Promise.all([
+          blogDao.getCommentsByPostId(post.id),
+          blogDao.getLikeCount(post.id)
+        ])
+      )).then((results) => {
+        posts.forEach((post, index) => {
+          post.comments = results[index][0];
+          post.likes = results[index][1];
+        });
+        res.status(200).json(posts);
+      });
     })
+
     .catch((err) => {
-      console.error('Error fetching blog posts:', err);
-      res.status(500).json({ message: 'Error fetching blog posts' });
+      console.error('Error fetching posts:', err);
+      res.status(500).json({ message: 'Error fetching posts' });
     });
 };
-
-
 
 // Get single blog post by ID
 exports.getSingleBlogPost = (req, res) => {

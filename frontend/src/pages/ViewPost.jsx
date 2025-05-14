@@ -6,14 +6,15 @@ import bannerImg from "../img/travel.jpg";
 const ViewPost = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [countryDetails, setCountryDetails] = useState({});
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Fetch post data
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/blogs/blog/${id}`);
-
         setPost(res.data);
         setError("");
       } catch (err) {
@@ -24,6 +25,29 @@ const ViewPost = () => {
 
     fetchPost();
   }, [id]);
+
+  // Fetch country details (flag, capital, currency)
+  useEffect(() => {
+    const fetchCountryDetails = async (countryName) => {
+      if (!countryName) {
+        console.error("Country name is missing.");
+        return;
+      }
+
+      try {
+        const res = await axios.get(`http://localhost:5000/api/country/${countryName}`);
+        setCountryDetails(res.data);
+      } catch (err) {
+        console.error("Error fetching country details:", err);
+      }
+    };
+
+    if (post && post.country) {
+      fetchCountryDetails(post.country);
+    } else {
+      setError("Country name is not available.");
+    }
+  }, [post]);
 
   if (error) {
     return (
@@ -37,6 +61,8 @@ const ViewPost = () => {
   if (!post) {
     return <div className="view-post-container"><p>Loading...</p></div>;
   }
+
+  const { country, capital, currency, flag } = countryDetails;
 
   return (
     <div>
@@ -54,7 +80,23 @@ const ViewPost = () => {
             <strong>Posted by:</strong> {post.username || "Unknown"}
           </div>
           <div className="post-info">
-            <p><strong>Country:</strong> {post.country}</p>
+            <p>
+              <strong>Country:{post.country}</strong> {country}{" "}
+              {flag && (
+                <img
+                  src={flag}
+                  alt={`${country} flag`}
+                  style={{
+                    width: "24px",
+                    height: "16px",
+                    marginLeft: "8px",
+                    verticalAlign: "middle",
+                  }}
+                />
+              )}
+            </p>
+            {capital && <p><strong>Capital:</strong> {capital}</p>}
+            {currency && <p><strong>Currency:</strong> {currency}</p>}
             <p><strong>Date of Visit:</strong> {new Date(post.date_of_visit).toLocaleDateString()}</p>
           </div>
         </div>
@@ -62,8 +104,6 @@ const ViewPost = () => {
         <div className="post-body">
           <p>{post.content}</p>
         </div>
-
-        
       </div>
     </div>
   );

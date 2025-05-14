@@ -13,7 +13,7 @@ exports.createBlogPost = (userId, title, content, country, date_of_visit) => {
 
 // Get all blog posts with the username of the post owner
 exports.getAllBlogPosts = (sortOption) => {
-  let orderByClause = 'blog_posts.created_at DESC';  // Use actual column name from your DB
+  let orderByClause = 'blog_posts.created_at DESC';
 
   if (sortOption === 'mostLiked') {
     orderByClause = 'like_count DESC';
@@ -32,7 +32,7 @@ ORDER BY ${orderByClause};
 
   `;
 
-  
+
   return new Promise((resolve, reject) => {
     db.query(sql, (err, results) => {
       if (err) return reject(err);
@@ -115,7 +115,7 @@ exports.addComment = (userId, postId, content) => {
 
 // Get comments for a specific post by postId
 exports.getCommentsByPostId = (postId) => {
-  const sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";  
+  const sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC";
   return new Promise((resolve, reject) => {
     db.query(sql, [postId], (err, results) => {
       if (err) return reject(err);
@@ -162,7 +162,7 @@ exports.searchBlogPostsByUsername = (username) => {
 exports.getPostsByUserIds = (userIds) => {
 
   if (userIds.length === 0) {
-    return Promise.resolve([]); 
+    return Promise.resolve([]);
   }
 
   const sql = `
@@ -172,7 +172,7 @@ exports.getPostsByUserIds = (userIds) => {
     WHERE blog_posts.user_id IN (?)
     ORDER BY blog_posts.date_of_visit DESC
   `;
-  
+
   return new Promise((resolve, reject) => {
     db.query(sql, [userIds], (err, results) => {
       if (err) return reject(err);

@@ -4,13 +4,13 @@ require('dotenv').config();
 
 // Middleware to authenticate users
 const authenticate = (req, res, next) => {
-  let token = req.cookies.accessToken; 
+  let token = req.cookies.accessToken;
 
   // If not found in cookies, try Authorization header
   if (!token && req.headers.authorization) {
     const authHeader = req.headers.authorization;
     if (authHeader.startsWith('Bearer ')) {
-      token = authHeader.split(' ')[1]; 
+      token = authHeader.split(' ')[1];
     }
   }
 
@@ -20,7 +20,7 @@ const authenticate = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; 
+    req.user = decoded;
     next();
   } catch (error) {
     console.error('Token verification failed:', error.message);
