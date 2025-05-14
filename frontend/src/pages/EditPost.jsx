@@ -1,13 +1,13 @@
-// src/pages/EditPost.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-
+// EditPost component allows users to edit an existing blog post
 const EditPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");   // Get token from localStorage for authenticated API requests
 
   const [post, setPost] = useState({ title: "", content: "", country: "", date_of_visit: "" });
 
@@ -27,7 +27,7 @@ const EditPost = () => {
     setPost({ ...post, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {   // Handle form submission to update the post
     e.preventDefault();
     try {
       await axios.put(`http://localhost:5000/api/blogs/blog/edit/${id}`, post, {

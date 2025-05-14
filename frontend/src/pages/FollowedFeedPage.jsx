@@ -23,6 +23,8 @@ const FollowedFeed = () => {
     fetchUserId();
   }, [navigate]);
 
+   // Fetch posts from followed users once userId is set
+
   useEffect(() => {
     if (!userId) {
       setLoading(false);
@@ -34,7 +36,7 @@ const FollowedFeed = () => {
         setLoading(true);
         setError(null);
 
-        const res = await axios.get(`http://localhost:5000/api/follow/${userId}/followed-posts`);
+        const res = await axios.get(`http://localhost:5000/api/follow/${userId}/followed-posts`);  // Call backend API to get followed users' posts
         setPosts(res.data.length > 0 ? res.data : []);
       } catch (error) {
         console.error('Error fetching followed posts:', error);

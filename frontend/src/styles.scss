@@ -348,6 +348,13 @@ $lightgreen: #b9e7e7;
 .comment-btn.commented {
   color: #28a745;
 }
+.comment-btn{
+    border-radius: 20px;
+    height: 20px;
+    width: 150px;
+    background-color: #255F38;
+    color: white;
+}
 
 .like-count {
   font-size: 0.9rem;
@@ -852,10 +859,7 @@ $lightgreen: #b9e7e7;
 }
 
 .logout-btn{
- 
-    border-radius: 20px;
- 
-    width: 80px;
+     border-radius: 20px;
+     width: 80px;
     background-color: #f9f9f9;
-
 }

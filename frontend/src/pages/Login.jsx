@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {    // Handles form submission for login
     e.preventDefault();
 
     if (!username || !password) {
@@ -18,7 +18,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await axios.post(  // Make POST request to login endpoint
         "http://localhost:5000/api/auth/login",
         { username, password },
         { withCredentials: true }

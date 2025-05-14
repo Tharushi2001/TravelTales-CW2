@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 
-
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [error, setError] = useState(""); // Error state for custom error messages
-  const navigate = useNavigate(); // useNavigate replaces useHistory
+  const [isLoading, setIsLoading] = useState(false); 
+  const [error, setError] = useState("");
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,8 +19,7 @@ const Register = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
-
+    setIsLoading(true); 
     try {
       const response = await axios.post("http://localhost:5000/api/auth/register", {
         username,
@@ -39,7 +37,7 @@ const Register = () => {
       console.error("Registration failed:", error);
       setError("An error occurred during registration. Please try again.");
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false); 
     }
   };
 

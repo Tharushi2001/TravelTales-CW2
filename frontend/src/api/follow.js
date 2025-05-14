@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api/follow'; // Backend URL
+const API_BASE_URL = 'http://localhost:5000/api/follow';
 
 // Follow a user
 export const followUser = async (followerId, followingId) => {

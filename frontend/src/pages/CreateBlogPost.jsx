@@ -18,7 +18,7 @@ const CreateBlogPost = () => {
         const response = await axios.get("https://restcountries.com/v3.1/all");
         const countryNames = response.data.map((country) => ({
           name: country.name.common,
-          code: country.cca2, // You can also use cca3 or name.common as identifiers
+          code: country.cca2,
         }));
         setCountries(countryNames);
       } catch (error) {

@@ -18,9 +18,11 @@ function UserProfile() {
         const resUser = await axios.get(`http://localhost:5000/api/auth/user/${userId}`);
         setUserData(resUser.data);
 
+        // Get list of followers and following users
         const followersRes = await axios.get(`http://localhost:5000/api/follow/${userId}/followers`);
         const followingRes = await axios.get(`http://localhost:5000/api/follow/${userId}/following`);
 
+        // Set follower/following counts
         setFollowerCount(followersRes.data.length);
         setFollowingCount(followingRes.data.length);
       } catch (error) {

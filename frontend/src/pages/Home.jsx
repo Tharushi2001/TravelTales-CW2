@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +19,7 @@ const Home = () => {
   const token = localStorage.getItem("token");
   const currentUserId = localStorage.getItem("userId");
 
-  // Fetch a single country flag (caches in state)
+  // Fetch a single country flag 
   const fetchCountryFlag = useCallback(
     async (countryName) => {
       if (!countryName || countryFlags[countryName]) return;
@@ -300,7 +299,7 @@ const Home = () => {
                     {post.likes} Likes
                   </span>
                   <span className="comment-count">
-                    <button
+                    <button   className="comment-btn"
                       onClick={() =>
                         handleToggleComments(post.id)
                       }
