@@ -68,3 +68,21 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Clone the Repository
+git clone https://github.com/Tharushi2001/TravelTales-CW2.git
+cd TravelTales-CW2
+
+### Using Docker
+docker-compose up --build
+
+Frontend: http://localhost:3000
+Backend API: http://localhost:5000
+
+### without docker
+### Navigate to the backend
+cd Backend
+node src/index.js
+
+cd frontend
+npm start
