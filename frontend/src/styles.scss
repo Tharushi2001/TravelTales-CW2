@@ -354,6 +354,7 @@ $lightgreen: #b9e7e7;
     width: 150px;
     background-color: #255F38;
     color: white;
+    font-size: 12px;
 }
 
 .like-count {
@@ -837,6 +838,11 @@ $lightgreen: #b9e7e7;
 .edit-post-form textarea {
   resize: vertical;
   min-height: 150px;
+}
+.country-details{
+ display: flex;
+flex-direction: column;
+align-items: center;
 }
 
 .update-post-btn {
